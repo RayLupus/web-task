@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+  layout:decorator="layout">
+  <head>
+    <title>Products : Create</title>
+  </head>
+  <body>
+    <h1 layout:fragment="header">Products : Create</h1>
+    <div layout:fragment="content"
+        class="container">
+      <form id="productForm"
+          th:action="@{/(form)}"
+          th:object="${product}"
+          action="#"
+          method="post">
+        <div th:if="${#fields.hasErrors('*')}"
+            class="alert alert-error">
+          <p th:each="error : ${#fields.errors('*')}"
+              th:text="${error}">
+            Validation error
+          </p>
+        </div>
+        <div class="pull-right">
+          <a th:href="@{/}" href="products.html">
+            Products
+          </a>
+        </div>
+        <label for="title">Title</label>
+        <input type="text"
+            th:field="*{title}"
+            th:class="${#fields.hasErrors('title')} ? 'field-error'"/>
+        <label for="detail">Detail</label>
+        <textarea
+            th:field="*{detail}"
+            th:class="${#fields.hasErrors('detail')} ? 'field-error'"></textarea>
+        <label for="amount">Amount</label>
+        <input type="text"
+            th:field="*{amount}"
+            th:class="${#fields.hasErrors('amount')} ? 'field-error'"/> 
+        <div class="form-actions">
+          <input type="submit" value="Create"/>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

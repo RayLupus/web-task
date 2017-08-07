@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>JasonLu's Shop</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Currently available in our shop:</h1>
+	<div layout:fragment="content" class="container">
+		<div class="alert alert-success" th:if="${globalProduct}"
+			th:text="${globalProduct}"></div>
+		<div class="alert alert-error" id="ajaxResult" style="display: none;"></div>
+		<div class="pull-right">
+			<a th:href="@{/(form)}">Create Product</a>
+		</div>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<td>Title</td>
+					<td>Detail</td>
+					<td>Amount</td>
+					<td>CreatedDate</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${model.get('products').empty}">
+					<td colspan="4">No Products</td>
+				</tr>
+				<tr th:each="product : ${model.get('products')}">
+					<td><a href="view.html" th:href="@{'/' + ${product.id}}"
+						th:text="${product.title}"> </a></td>
+					<td th:text="${product.detail}"></td>
+					<td th:id="@{'amount_' + ${product.id}}" th:text="${product.amount}"></td>
+					<td th:text="${#calendars.format(product.created)}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<h1>Your orders:</h1>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<td>OrderId</td>
+					<td>ProductName</td>
+					<td>Count</td>
+				</tr>
+			</thead>
+			<tbody id="orders">
+				<tr th:each="order : ${model.get('orders')}">
+					<td th:text="${order.id}"></td>
+					<td th:text="${order.productName}"></td>
+					<td th:text="${order.count}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<h1>Your shopping:</h1>
+		<table class="table table-bordered table-striped">
+			<tbody>
+				<tr th:if="${model.get('products').empty}">
+					<td colspan="2">No Products</td>
+				</tr>
+				<tr th:each="product : ${model.get('products')}">
+					<td th:text="${product.title}"></td>
+					<td><input th:id="${product.id}" type="text"
+						class="orderCount" /></td>
+				</tr>
+				<tr th:if="${!model.get('products').empty}">
+					<td colspan="2"><input type="button" value="Buy"
+						onclick="order()" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

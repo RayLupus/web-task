@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+<title>Layout</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<script th:src="@{/js/jquery-1.7.2.js}"></script>
+<script th:src="@{/js/jquery.validate.js}"></script>
+<script th:src="@{/js/order.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="navbar">
+			<div class="navbar-inner">
+				<a class="brand" href="/"> JasonLu's Shop </a>
+				<ul class="nav">
+					<li><a th:href="@{/}" href="products.html"> Home </a></li>
+				</ul>
+			</div>
+		</div>
+		<h1 layout:fragment="header"></h1>
+		<div layout:fragment="content"></div>
+	</div>
+</body>
+</html>

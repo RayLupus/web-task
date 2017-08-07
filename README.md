@@ -10,7 +10,9 @@ or
 mvn spring-boot:run
 
 WEB : src/main/java/jasonlu/com/ui/SampleWebUiApplication.java | default url is http://127.0.0.1:8080
+
 Task I : src/main/java/jasonlu/com/ui/GameOfLife.java
+
 Task II : src/main/java/jasonlu/com/ui/TicTacTone.java
 
 1. Reason why you used specific frameworks and libraries for the front-end and backend

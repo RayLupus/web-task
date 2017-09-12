@@ -1,10 +1,4 @@
-/**
- * Project: IJtlParser File Created at 2010-7-30 $Id$ Copyright 2008 Alibaba.com Croporation Limited. All rights
- * reserved. This software is the confidential and proprietary information of Alibaba Company.
- * ("Confidential Information"). You shall not disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into with Alibaba.com.
- */
-package com.alibaba.ijtlparser;
+package mytools.ijtlparser;
 
 import java.awt.Color;
 import java.io.File;
@@ -31,19 +25,15 @@ import org.jfree.data.xy.XYDataset;
  */
 public class ParserUtils {
 
-    // 图片属性
     public static Integer RES_PIC_WIDTH  = 900;
     public static Integer RES_PIC_HEIGHT = 400;
     public static Integer TPS_PIC_WIDTH  = 900;
     public static Integer TPS_PIC_HEIGHT = 400;
-    // 柱状条参数
     public static Double  BAR_MAX_WIDTH  = 0.04;
     public static Double  BAR_MIN_LENGTH = 0.01;
 
-    public static void doXYLineChart(String title, String xtitle, String ytitle, XYDataset xydataset,
-                                     String outputFilePath) throws IOException {
-        JFreeChart xyChart = ChartFactory.createXYLineChart(title, xtitle, ytitle, xydataset, PlotOrientation.VERTICAL,
-                                                            false, true, false);
+    public static void doXYLineChart(String title, String xtitle, String ytitle, XYDataset xydataset, String outputFilePath) throws IOException {
+        JFreeChart xyChart = ChartFactory.createXYLineChart(title, xtitle, ytitle, xydataset, PlotOrientation.VERTICAL, false, true, false);
         XYPlot plot = (XYPlot) xyChart.getPlot();
         XYItemRenderer r = plot.getRenderer();
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
@@ -53,8 +43,7 @@ public class ParserUtils {
         ChartUtilities.saveChartAsPNG(outputJpgFile, xyChart, TPS_PIC_WIDTH, TPS_PIC_HEIGHT);
     }
 
-    public static void doXYLineTimeChart(String title, String xtitle, String ytitle, XYDataset xydataset,
-                                         String outputFilePath) throws IOException {
+    public static void doXYLineTimeChart(String title, String xtitle, String ytitle, XYDataset xydataset, String outputFilePath) throws IOException {
         JFreeChart xyChart = ChartFactory.createTimeSeriesChart(title, xtitle, ytitle, xydataset, false, true, false);
         XYPlot plot = (XYPlot) xyChart.getPlot();
         XYItemRenderer r = plot.getRenderer();
@@ -66,12 +55,9 @@ public class ParserUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static void dataBarChart(String title, String xtitle, String ytitle, CategoryDataset categoryDataset,
-                                    String outputFilePath) throws IOException {
-        JFreeChart barChart = ChartFactory.createBarChart(title, xtitle, ytitle, categoryDataset,
-                                                          PlotOrientation.VERTICAL, false, true, false);
+    public static void dataBarChart(String title, String xtitle, String ytitle, CategoryDataset categoryDataset, String outputFilePath) throws IOException {
+        JFreeChart barChart = ChartFactory.createBarChart(title, xtitle, ytitle, categoryDataset, PlotOrientation.VERTICAL, false, true, false);
         CategoryPlot plot = barChart.getCategoryPlot();
-        // 横坐标
         CategoryAxis domainAxis = plot.getDomainAxis();
         domainAxis.setUpperMargin(0.001);
         domainAxis.setLowerMargin(0.001);
@@ -82,9 +68,8 @@ public class ParserUtils {
         customBarRenderer.setMaximumBarWidth(BAR_MAX_WIDTH);
         customBarRenderer.setMinimumBarLength(BAR_MIN_LENGTH);
         customBarRenderer.setSeriesPaint(0, Color.ORANGE);
-        // 显示每个柱的数值，并修改该数值的字体属性
         customBarRenderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-        customBarRenderer.setItemLabelPaint(Color.BLACK);// 字体为黑色
+        customBarRenderer.setItemLabelPaint(Color.BLACK);
         customBarRenderer.setItemLabelsVisible(true);
         plot.setRenderer(customBarRenderer);
         File outputJpgFile = new File(outputFilePath);

@@ -1,10 +1,4 @@
-/**
- * Project: IJtlParser File Created at 2010-7-24 $Id$ Copyright 2008 Alibaba.com Croporation Limited. All rights
- * reserved. This software is the confidential and proprietary information of Alibaba Company.
- * ("Confidential Information"). You shall not disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into with Alibaba.com.
- */
-package com.alibaba.ijtlparser;
+package mytools.ijtlparser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,8 +18,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
- * Jmeter JTL 解析工具
- * 
  * @author xiaochuan.luxc
  */
 public class IJtlParser {
@@ -37,18 +29,8 @@ public class IJtlParser {
 
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
-            System.out.println("params introduction:\n1st:jtl file path(required)\n2nd:tps calculate time(optional)[default:"
-                               + TpsParser.TPS_PERIOD
-                               + "(s)]\n3rd:distributed ratio range,0-1(optional)[default:"
-                               + ResParser.DATA_RANGE
-                               + "]\n4th:res pic width(optional)[default:"
-                               + ParserUtils.RES_PIC_WIDTH
-                               + "]\n5th:res pic height(optional)[default:"
-                               + ParserUtils.RES_PIC_HEIGHT
-                               + "]\n6th:tps pic width(optional)[default:"
-                               + ParserUtils.TPS_PIC_WIDTH
-                               + "]\n7th:tps pic height(optional)[default:"
-                               + ParserUtils.TPS_PIC_HEIGHT + "]");
+            System.out.println("params introduction:\n1st:jtl file path(required)\n2nd:tps calculate time(optional)[default:" + TpsParser.TPS_PERIOD + "(s)]\n3rd:distributed ratio range,0-1(optional)[default:" + ResParser.DATA_RANGE + "]\n4th:res pic width(optional)[default:"
+                               + ParserUtils.RES_PIC_WIDTH + "]\n5th:res pic height(optional)[default:" + ParserUtils.RES_PIC_HEIGHT + "]\n6th:tps pic width(optional)[default:" + ParserUtils.TPS_PIC_WIDTH + "]\n7th:tps pic height(optional)[default:" + ParserUtils.TPS_PIC_HEIGHT + "]");
             System.exit(0);
         }
         analyseArgs(args);
@@ -65,7 +47,6 @@ public class IJtlParser {
         Map<Integer, Long> responseTimeMap = null;
         Map<String, BigInteger> cacheDataMap = null;
         Map<Long, Double> tpsMap = null;
-        // 数据搜集
         while ((line = reader.readLine()) != null) {
             String res = getProperty(line, " t");
             String ts = getProperty(line, " ts");
@@ -86,27 +67,21 @@ public class IJtlParser {
                     responseTimeMap = sampleDataMap.get(lb).getResponseTimeMap();
                     tpsMap = sampleDataMap.get(lb).getTpsMap();
                     cacheDataMap = sampleDataMap.get(lb).getCacheDataMap();
-                    // 搜集响应时间
                     Integer responseTime = Integer.parseInt(res);
                     try {
                         responseTimeMap.put(responseTime, responseTimeMap.get(responseTime) + 1);
                     } catch (Throwable t) {
                         responseTimeMap.put(responseTime, 1l);
                     }
-                    // 搜集错误请求数
                     if (!"true".equalsIgnoreCase(suc)) {
                         cacheDataMap.put("errorTotalCount", cacheDataMap.get("errorTotalCount").add(BigInteger.ONE));
-                        cacheDataMap.put("errorTotalTime",
-                                         cacheDataMap.get("errorTotalTime").add(BigInteger.valueOf(responseTime)));
+                        cacheDataMap.put("errorTotalTime", cacheDataMap.get("errorTotalTime").add(BigInteger.valueOf(responseTime)));
                     }
-                    // 搜集其他统计信息
                     cacheDataMap.put("totalTime", cacheDataMap.get("totalTime").add(BigInteger.valueOf(responseTime)));
                     cacheDataMap.put("totalCount", cacheDataMap.get("totalCount").add(BigInteger.ONE));
                     cacheDataMap.put("currentCount", cacheDataMap.get("currentCount").add(BigInteger.ONE));
                     cacheDataMap.put("currentTimestamp", BigInteger.valueOf(Long.valueOf(ts)));
-                    Double period = cacheDataMap.get("currentTimestamp").doubleValue()
-                                    - cacheDataMap.get("lastTimestamp").doubleValue();
-                    // TPS统计
+                    Double period = cacheDataMap.get("currentTimestamp").doubleValue() - cacheDataMap.get("lastTimestamp").doubleValue();
                     if (period > TpsParser.TPS_PERIOD * 1000) {
                         tps = (cacheDataMap.get("currentCount").doubleValue() / period) * 1000;
                         tpsMap.put(cacheDataMap.get("lastTimestamp").longValue(), tps);
@@ -116,23 +91,17 @@ public class IJtlParser {
                 }
             }
         }
-        // 对请求进行解析
+        reader.close();
         for (String sampleName : sampleDataMap.keySet()) {
-            // 进行响应时间统计
             ResParser resParser = new ResParser(sampleDataMap.get(sampleName));
             Map<String, Double> resDataChartMap = resParser.runParser();
 
-            // 进行绘图
             DefaultCategoryDataset responseTimeDataSet = new DefaultCategoryDataset();
             for (String key : resDataChartMap.keySet()) {
                 responseTimeDataSet.addValue(resDataChartMap.get(key), sampleName, key);
             }
-            ParserUtils.dataBarChart(sampleName, "ResponseTime(avg: "
-                                                 + sampleDataMap.get(sampleName).getParserResult().get("avgRes")
-                                                 + " ms)", "Ratio", responseTimeDataSet,
-                                     reportDir + ParserUtils.toPicName(sampleName) + "_res.png");
+            ParserUtils.dataBarChart(sampleName, "ResponseTime(avg: " + sampleDataMap.get(sampleName).getParserResult().get("avgRes") + " ms)", "Ratio", responseTimeDataSet, reportDir + ParserUtils.toPicName(sampleName) + "_res.png");
 
-            // 响应时间的曲线图
             /* ================================================================ */
             // responseTimeMap = sampleDataMap.get(sampleName).getResponseTimeMap();
             // Integer[] responseTimeArray = responseTimeMap.keySet().toArray(new Integer[0]);
@@ -151,11 +120,9 @@ public class IJtlParser {
             // reportDir + ParserUtils.toPicName(sampleName) + "_resxy.png");
             /* ================================================================ */
 
-            // 进行TPS统计
             TpsParser tpsParser = new TpsParser(sampleDataMap.get(sampleName));
             Long[] timestampArray = tpsParser.runParser();
 
-            // 进行绘图
             tpsMap = sampleDataMap.get(sampleName).getTpsMap();
             XYSeries tpsXySeries = new XYSeries("TPS");
             for (Long time : timestampArray) {
@@ -163,12 +130,9 @@ public class IJtlParser {
             }
             XYSeriesCollection tpsDataset = new XYSeriesCollection();
             tpsDataset.addSeries(tpsXySeries);
-            ParserUtils.doXYLineTimeChart(sampleName, "Time", "TPS", tpsDataset, reportDir
-                                                                                 + ParserUtils.toPicName(sampleName)
-                                                                                 + "_tps.png");
+            ParserUtils.doXYLineTimeChart(sampleName, "Time", "TPS", tpsDataset, reportDir + ParserUtils.toPicName(sampleName) + "_tps.png");
         }
         long endTime = System.currentTimeMillis();
-        // 进行报告
         Reporter reporter = new Reporter(sampleDataMap);
         reporter.reportFile(reportDir);
         System.out.println("Time-Consuming : " + ((endTime - startTime) / 1000d) + "s");

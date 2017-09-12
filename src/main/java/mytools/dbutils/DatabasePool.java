@@ -1,4 +1,4 @@
-package com.alibaba.intl.qa.ui.database;
+package mytools.dbutils;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -15,9 +15,7 @@ public class DatabasePool {
     public static Map<Integer, Connection> pool = new HashMap<Integer, Connection>();
     static {
         try {
-            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
             Driver mysqlDriver = new com.mysql.jdbc.Driver();
-            DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(mysqlDriver);
         } catch (SQLException e) {
             throw new RuntimeException("aui.agent初始化失败");

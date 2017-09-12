@@ -1,4 +1,4 @@
-package com.alibaba.intl.qa.ui.database;
+package mytools.dbutils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,8 +13,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.intl.qa.ui.api.DatabaseType;
 
 /**
  * @author xiaochuan.luxc 2014-10-21
@@ -36,8 +34,7 @@ public class DBUtil {
      * @return 注册数据库Key
      */
     public static Integer regist(DatabaseType type, String host, String port, String database, String username, String password) {
-        if (type == null || StringUtils.isBlank(host) || StringUtils.isBlank(port) || StringUtils.isBlank(database)
-            || StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+        if (type == null || StringUtils.isBlank(host) || StringUtils.isBlank(port) || StringUtils.isBlank(database) || StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             StringBuilder sb = new StringBuilder();
             sb.append(host);
             sb.append(":");

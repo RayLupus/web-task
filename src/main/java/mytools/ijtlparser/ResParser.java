@@ -1,10 +1,4 @@
-/**
- * Project: IJtlParser File Created at 2010-7-30 $Id$ Copyright 2008 Alibaba.com Croporation Limited. All rights
- * reserved. This software is the confidential and proprietary information of Alibaba Company.
- * ("Confidential Information"). You shall not disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into with Alibaba.com.
- */
-package com.alibaba.ijtlparser;
+package mytools.ijtlparser;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -20,7 +14,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
  */
 public class ResParser {
 
-    // 统计的Ratio率
     public static Double       DATA_RANGE = 0.1;
 
     protected JmeterSampleData targetData;
@@ -31,9 +24,6 @@ public class ResParser {
         sampleName = targetData.getSampleName();
     }
 
-    /**
-     * @return Map<String, Double> key=响应时间范围 value=比率 用于绘制响应时间柱状图
-     */
     public Map<String, Double> runParser() {
         Map<String, Double> resDataChartMap = new LinkedHashMap<String, Double>();
 
@@ -84,19 +74,16 @@ public class ResParser {
             percent = 0d;
             done = true;
         }
-        // 添加绘图数据
         for (String key : resDataChartMap.keySet()) {
             responseTimeDataSet.addValue(resDataChartMap.get(key), targetData.getSampleName(), key);
         }
         Double avgResTime = cacheDataMap.get("totalTime").doubleValue() / totalCount.doubleValue();
         Double errorAvgResTime = cacheDataMap.get("errorTotalTime").doubleValue() / errorTotalCount.doubleValue();
-        // 计算标准差
         Double squareDev = 0d;
         for (Integer responseTimeKey : responseTimeArray) {
             squareDev += Math.pow(Math.abs(responseTimeKey - avgResTime), 2) * responseTimeMap.get(responseTimeKey);
         }
         Double stdDevRes = Math.sqrt(squareDev / totalCount.doubleValue());
-        // 解析结果添加
         parserResult.put("minRes", responseTimeArray[0]);
         parserResult.put("maxRes", responseTimeArray[responseTimeArray.length - 1]);
         parserResult.put("avgRes", avgResTime);
